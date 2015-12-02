@@ -1,5 +1,11 @@
 *.class
 *.iml
+.idea
+.sonar
+
+target/*
+
+pom.xml.bak
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
