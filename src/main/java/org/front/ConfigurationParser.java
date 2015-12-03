@@ -11,7 +11,7 @@ import org.apache.commons.cli.ParseException;
 public class ConfigurationParser {
 
     private static final String DEFAULT_BINDING_ADDRESS = "127.0.0.1";
-    private static final String DEFAULT_BINDING_PORT = "325224";
+    private static final String DEFAULT_BINDING_PORT = "5544";
 
     private static ConfigurationParser instance;
 
