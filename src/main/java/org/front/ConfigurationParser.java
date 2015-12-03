@@ -7,6 +7,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class ConfigurationParser {
 
     public static final String DEFAULT_BINDING_ADDRESS = "127.0.0.1";
@@ -16,25 +19,29 @@ public class ConfigurationParser {
     private CommandLineParser commandLineParser;
     private Options options;
 
-    private void ConfigurationParser() {
-        commandLineParser = new DefaultParser();
+    private ConfigurationParser() {
     }
 
-    private void initOptions() {
+    private void initialize() {
+
+        commandLineParser = new DefaultParser();
+
         options = new Options();
-        options.addOption("a", "bind-address", true, "Binding Address");
-        options.addOption("p", "bind-port", true, "Binding Port");
+        options.addOption("a", "address", true, "Binding Address");
+        options.addOption("p", "port", true, "Binding Port");
     }
 
     public static ConfigurationParser getInstance() {
+
         if (instance == null) {
             instance = new ConfigurationParser();
-            instance.initOptions();
+            instance.initialize();
         }
+
         return instance;
     }
 
-    public Configuration parse(String[] args) throws ConfigurationException {
+    public Configuration parse(String[] args) {
 
         Configuration configuration = new Configuration();
 
@@ -45,15 +52,16 @@ public class ConfigurationParser {
             configuration.setBindingAddress(commandLine.getOptionValue("a", DEFAULT_BINDING_ADDRESS));
             configuration.setBindingPort(Integer.valueOf(commandLine.getOptionValue("p", DEFAULT_BINDING_PORT)));
 
-        } catch (ParseException e) {
+        } catch (ParseException | NumberFormatException e) {
 
-            throw new ConfigurationException("Could not load configuration", e);
+            throw new IllegalArgumentException("Could not load configuration", e);
         }
 
         return configuration;
     }
 
     public void printUsage() {
+
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("front", options);
     }
