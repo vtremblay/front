@@ -1,10 +1,16 @@
 package org.front.http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 
+@SuppressWarnings("squid:S1312")
 public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
+
+    private static final Logger log = LoggerFactory.getLogger(ProxyBackendHandler.class);
 
     private volatile Channel outboundChannel;
 
@@ -34,15 +40,12 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         if (outboundChannel.isActive()) {
-            outboundChannel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) {
-                    if (future.isSuccess()) {
-                        // was able to flush out data, start to read the next chunk
-                        ctx.channel().read();
-                    } else {
-                        future.channel().close();
-                    }
+            outboundChannel.writeAndFlush(msg).addListener((ChannelFuture future) -> {
+                if (future.isSuccess()) {
+                    // was able to flush out data, start to read the next chunk
+                    ctx.channel().read();
+                } else {
+                    future.channel().close();
                 }
             });
         }
@@ -57,7 +60,9 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+
+        log.error(cause.getMessage(), cause);
+
         closeOnFlush(ctx.channel());
     }
 

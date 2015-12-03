@@ -4,6 +4,7 @@ import io.netty.channel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("squid:S1312")
 public class ProxyBackendHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(ProxyBackendHandler.class);
@@ -21,14 +22,11 @@ public class ProxyBackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        inboundChannel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) {
-                if (future.isSuccess()) {
-                    ctx.channel().read();
-                } else {
-                    future.channel().close();
-                }
+        inboundChannel.writeAndFlush(msg).addListener((ChannelFuture future) -> {
+            if (future.isSuccess()) {
+                ctx.channel().read();
+            } else {
+                future.channel().close();
             }
         });
     }

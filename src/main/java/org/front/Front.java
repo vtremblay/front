@@ -4,6 +4,7 @@ import org.front.http.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("squid:S1312")
 public class Front {
 
     private static final Logger log = LoggerFactory.getLogger(Front.class);
@@ -35,6 +36,7 @@ public class Front {
         try {
             configuration = ConfigurationParser.getInstance().parse(args);
         } catch (IllegalArgumentException e) {
+            log.error("Error while parsing configurations", e);
             ConfigurationParser.getInstance().printUsage();
         }
 

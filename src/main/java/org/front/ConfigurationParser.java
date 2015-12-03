@@ -7,13 +7,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
+@SuppressWarnings("squid:S1313")
 public class ConfigurationParser {
 
-    public static final String DEFAULT_BINDING_ADDRESS = "127.0.0.1";
-    public static final String DEFAULT_BINDING_PORT = "325224";
+    private static final String DEFAULT_BINDING_ADDRESS = "127.0.0.1";
+    private static final String DEFAULT_BINDING_PORT = "325224";
+
     private static ConfigurationParser instance;
 
     private CommandLineParser commandLineParser;
